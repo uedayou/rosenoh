@@ -1,28 +1,32 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+        路線王 ～駅名だけで路線を当てるクイズゲーム～
+      </div>
+    </v-app-bar>
+
+    <v-content>
+      <router-view></router-view>
+    </v-content>
+    <v-footer color="white" outlined>
+      <v-spacer></v-spacer>
+        <a style="text-decoration:none;color:inherit;margin-right:0.5em;" href="https://uedayou.net/" target="_blank">@uedayou</a> {{ new Date().getFullYear() }}. Some rights reserved.
+      <v-spacer></v-spacer>
+    </v-footer>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  data: () => ({
+    //
+  }),
+};
 </script>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

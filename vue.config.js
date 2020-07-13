@@ -8,5 +8,5 @@ module.exports = {
       title: '路線王 ～駅名だけで鉄道路線を当てるクイズゲーム～',
     }
   },
-  // publicPath: './'
+  publicPath: './'
 }

@@ -56,7 +56,7 @@
         <v-card>
           <v-list-item>
             <div class="overline mb-4">
-              回答
+              解答
             </div>
           </v-list-item>
           <v-list-item>
@@ -80,7 +80,7 @@
                     :disabled="!answer || currentTime<=0"
                     depressed large color="primary"
                     @click="complete">
-                    回答する
+                    解答する
                   </v-btn>
                 </v-col>
               </v-row>
@@ -91,7 +91,7 @@
     </v-row>
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
-        <v-card-title class="headline justify-center">回答終了</v-card-title>
+        <v-card-title class="headline justify-center">解答終了</v-card-title>
         <v-spacer></v-spacer>
         <v-card-actions class="justify-center">
           <v-btn depressed large color="primary" @click="goAnswerPage">正解は？</v-btn>

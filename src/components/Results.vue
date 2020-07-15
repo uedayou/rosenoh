@@ -78,9 +78,9 @@ export default {
     headers: [
       { text: '問題', align: 'start', value: 'index' },
       { text: '正誤', value: "correctness" },
-      { text: '回答', value: 'select' },
+      { text: '解答', value: 'select' },
       { text: '正解', value: 'label' },
-      { text: '回答時間', value: 'stime' },
+      { text: '解答時間', value: 'stime' },
     ],
     results: null,
     nQuiz: 0,

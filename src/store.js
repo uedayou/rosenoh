@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { ulid } from 'ulid'
-import data from './assets/data.json'
+import quizData from './assets/data.json'
 
 Vue.use(Vuex)
 
@@ -41,12 +41,12 @@ export default new Vuex.Store({
     getQuizById: (state) => (id) => {
       return state.quizzes.find(q=>q.id === id);
     },
-    getLines: (state) => {
+    getData: (state) => {
       let lines = state.lines;
       if (lines.length===0) {
         const num = 10;
         // 名城線は 2号と4号とあり、クイズとして紛らわしいので候補から削除
-        let items = data.filter(d=>d.nstation>=num&&!d.line.match(/名城線/));
+        let items = quizData.filter(d=>d.nstation>=num&&!d.line.match(/名城線/));
         for (const item of items) lines.push(item.label);
         state.lines = lines;
       }
@@ -90,11 +90,14 @@ export default new Vuex.Store({
     initialize(context) {
       context.commit("setResults", []);
       let quizzes = [];
-      const lines = [...context.getters.getLines];
+      const lines = shuffle(context.getters.getData);
       for (let i=0;i<context.getters.getNumberOfQuize;i++) {
-        const index = Math.floor(Math.random()*lines.length);
-        quizzes.push({ label: lines[index] });
-        lines.splice(index, 1);
+        const answer = lines.shift();
+        const candidates = [answer];
+        for (let i=0;i<7;i++) {
+          candidates.push(lines.shift());
+        }
+        quizzes.push({ answer, candidates:shuffle(candidates) });
       }
       quizzes.map((quiz,index)=>{
         quiz.id = ulid();
@@ -105,3 +108,11 @@ export default new Vuex.Store({
     },
   }
 })
+
+const shuffle = ([...array]) => {
+  for (let i = array.length - 1; i >= 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}

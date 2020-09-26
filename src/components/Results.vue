@@ -59,7 +59,7 @@
         <v-card>
           <v-row justify="center">
             <v-col cols="auto">
-              <v-btn style="margin-top:30px;margin-bottom:30px"
+              <v-btn class="btn-go-top"
                 depressed large color="primary" to="/">
                 最初に戻る
               </v-btn>
@@ -79,7 +79,7 @@ export default {
       { text: '問題', align: 'start', value: 'index' },
       { text: '正誤', value: "correctness" },
       { text: '解答', value: 'select' },
-      { text: '正解', value: 'label' },
+      { text: '正解', value: 'answer' },
       { text: '解答時間', value: 'stime' },
     ],
     results: null,
@@ -88,7 +88,7 @@ export default {
     totalTime: 0,
     mode: "ふつう",
   }),
-  mounted() {
+  mounted: function() {
     let res = this.$store.getters.getResults;
     if (!res) {
       this.$router.replace({ name: "top" });
@@ -120,5 +120,9 @@ export default {
 }
 .font-color-green {
   color:green
+}
+.btn-go-top {
+  margin-top:30px;
+  margin-bottom:30px;
 }
 </style>

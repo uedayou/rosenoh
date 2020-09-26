@@ -45,7 +45,7 @@
               width="10"
               :color="getTimerColor()"
             >
-            <span style="font-size:36px">
+            <span class="currentTime">
               {{ currentTime }}
             </span>
             </v-progress-circular>
@@ -60,16 +60,27 @@
             </div>
           </v-list-item>
           <v-list-item>
+            <div class="overline mb-4">
+              以下の路線名をひとつ選択して解答ボタンを押してください。
+            </div>
+          </v-list-item>
+          <v-list-item>
             <v-list-item-content>
-              <v-row justify="center">
-                <v-col cols="auto">
-                  <v-autocomplete
-                    v-model="answer"
-                    :items="$store.getters.getLines"
-                    label="路線を選択してください"
-                  ></v-autocomplete>
-                </v-col>
-              </v-row>
+              <v-btn-toggle
+                v-model="answer">
+                <v-row justify="center">
+                  <v-col 
+                    cols="6"
+                    class="col-answer"
+                    v-for="(candidate,i) in quiz?quiz.candidates:[]"
+                    :key="i"
+                  >
+                    <v-btn class="btn-answer title" active-class="btn-answer-active">
+                      {{ candidate }}
+                    </v-btn>
+                  </v-col>
+                </v-row>
+              </v-btn-toggle>
             </v-list-item-content>
           </v-list-item>
           <v-list-item>
@@ -77,7 +88,7 @@
               <v-row justify="center">
                 <v-col cols="auto">
                   <v-btn 
-                    :disabled="!answer || currentTime<=0"
+                    :disabled="answer == null || currentTime <= 0"
                     depressed large color="primary"
                     @click="complete">
                     解答する
@@ -91,10 +102,14 @@
     </v-row>
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
-        <v-card-title class="headline justify-center">解答終了</v-card-title>
+        <v-card-title class="headline justify-center">
+          解答終了
+        </v-card-title>
         <v-spacer></v-spacer>
         <v-card-actions class="justify-center">
-          <v-btn depressed large color="primary" @click="goAnswerPage">正解は？</v-btn>
+          <v-btn depressed large color="primary" @click="goAnswerPage">
+            正解は？
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -126,14 +141,14 @@ export default {
     currentTime: 0,
     dialog: false,
   }),
-  mounted() {
+  mounted: function() {
     if (this.$route.params.id) {
       this.startTime = this.$store.getters.getAnswerTime;
       this.getQuiz(this.$route.params.id);
     }
   },
   methods: {
-    async getQuiz(id) {
+    getQuiz: async function(id) {
       this.loading = true;
       this.quiz = this.$store.getters.getQuizById(id);
       if (!this.quiz) {
@@ -141,33 +156,16 @@ export default {
         this.$router.replace({ name: "top" });
         return;
       }
-      this.line = this.quiz.label;
+      this.line = this.quiz.answer;
       const url = "https://uedayou.net/jrslod/"+this.line;
       let res = await axios.get(url+".json");
-      this.stations = this.getLineStations(res.data, url);
+      this.stations = getLineStations(res.data, url);
       this.candidates = this.getCandidates([...this.stations]);
       this.loading = false;
       this.currentTime = this.startTime;
       this.start();
     },
-    getLineStations(data, uri) {
-      const obj = data[uri]["http://purl.org/dc/terms/relation"];
-      let bnodes = [];
-      for (const v of obj) bnodes.push(v.value);
-      let stations = [];
-      for (const bnUri of bnodes) {
-        const bn = data[bnUri];
-        for (const st of bn["http://purl.org/dc/terms/hasPart"]) {
-          const pathname = url.parse(st.value).pathname;
-          const matches = pathname.match(/^\/([^/]+?)\/([^/]+?)\/([^/]+?)\/(.+$)/i);
-          if (matches.length===5) {
-            stations.push(matches[4]);
-          }
-        }
-      }
-      return stations;
-    },
-    getCandidates(stations) {
+    getCandidates: function(stations) {
       const num = this.$store.getters.getNumberOfCandidate;
       let candidates = [];
       for (let i=0;i<num;i++) {
@@ -209,8 +207,8 @@ export default {
         ...this.quiz,
         stations: this.stations,
         candidates: this.candidates,
-        select: this.answer||"",
-        correct: this.answer===this.line,
+        select: this.quiz.candidates[this.answer]||"",
+        correct: this.quiz.candidates[this.answer]===this.line,
         time: this.startTime-this.currentTime,
       });
     },
@@ -219,7 +217,7 @@ export default {
       return this.currentTime-time;
     },
     getQuestionItem: function(number) {
-      if (!this.candidates) return "";
+      if (this.candidates == null) return "";
       const time = this.getRestTime(number);
       if (time>0) {
         return time+"秒後";
@@ -237,6 +235,25 @@ export default {
     }
   }
 }
+
+const getLineStations = (data, uri) => {
+  const obj = data[uri]["http://purl.org/dc/terms/relation"];
+  let bnodes = [];
+  for (const v of obj) bnodes.push(v.value);
+  let stations = [];
+  for (const bnUri of bnodes) {
+    const bn = data[bnUri];
+    for (const st of bn["http://purl.org/dc/terms/hasPart"]) {
+      const pathname = url.parse(st.value).pathname;
+      const matches = pathname.match(/^\/([^/]+?)\/([^/]+?)\/([^/]+?)\/(.+$)/i);
+      if (matches.length===5) {
+        stations.push(matches[4]);
+      }
+    }
+  }
+  return stations;
+}
+
 </script>
 
 <style>
@@ -245,5 +262,22 @@ export default {
 }
 .font-color-gray {
   color:#ccc
+}
+.btn-answer {
+  width:100%;
+  background-color:white !important;
+}
+.theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active {
+  border: 4px solid red !important;
+}
+.theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active:before {
+  opacity: 0;
+}
+
+.col-answer {
+  margin:0;
+}
+.currentTime {
+  font-size:36px;
 }
 </style>

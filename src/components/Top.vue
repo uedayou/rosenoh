@@ -24,7 +24,7 @@
                 鉄道駅名の候補だけを見て、日本のどの鉄道路線かを当てるクイズゲームアプリです。
                 </div>
                 <div>
-                現在、{{ $store.getters.getLines.length }} の鉄道路線からクイズが出題されます。
+                現在、{{ $store.getters.getData.length }} の鉄道路線からクイズが出題されます。
                 </div>
               </v-card-text>
             </v-col>

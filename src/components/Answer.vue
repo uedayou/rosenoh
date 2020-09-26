@@ -31,7 +31,7 @@
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title class="headline mb-1 text-align-center font-color-green">
-                {{ getLineName() }}
+                {{ getAnswer() }}
               </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
@@ -69,7 +69,7 @@
         <v-card>
           <v-row justify="center">
             <v-col cols="auto">
-              <v-btn style="margin-top:30px;margin-bottom:30px"
+              <v-btn class="btn-go-next"
                 depressed large color="primary"
                 @click="goNext">
                 {{ result.next ? '次の問題へ' : '結果' }}
@@ -99,8 +99,8 @@ export default {
       }
       return this.result;
     },
-    getLineName: function() {
-      return this.getResult().label;
+    getAnswer: function() {
+      return this.getResult().answer;
     },
     getStations: function() {
       return this.getResult().stations;
@@ -133,5 +133,9 @@ export default {
 }
 .font-color-green {
   color:green
+}
+.btn-go-next {
+  margin-top:30px;
+  margin-bottom:30px;
 }
 </style>

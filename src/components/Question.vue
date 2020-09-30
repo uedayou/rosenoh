@@ -75,7 +75,15 @@
                     v-for="(candidate,i) in quiz?quiz.candidates:[]"
                     :key="i"
                   >
-                    <v-btn class="btn-answer title" active-class="btn-answer-active">
+                    <v-btn class="btn-answer" :class="{
+                        'title': !$vuetify.breakpoint.mobile,
+                        'button': $vuetify.breakpoint.mobile
+                      }"
+                      active-class="btn-answer-active"
+                      style="white-space:normal;display:table-cell;"
+                      :style="{
+                        height: $vuetify.breakpoint.mobile ? '80px' : ''
+                      }">
                       {{ candidate }}
                     </v-btn>
                   </v-col>
@@ -270,7 +278,7 @@ const getLineStations = (data, uri) => {
 .theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active {
   border: 4px solid red !important;
 }
-.theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active:before {
+.btn-answer:before, .theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active:before {
   opacity: 0;
 }
 

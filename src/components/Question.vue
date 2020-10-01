@@ -278,7 +278,9 @@ const getLineStations = (data, uri) => {
 .theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active {
   border: 4px solid red !important;
 }
-.btn-answer:before, .theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active:before {
+.btn-answer:before,
+.v-btn:not(.v-btn--text):not(.v-btn--outlined):hover:before,
+.theme--light.v-btn-toggle:not(.v-btn-toggle--group) .v-btn.btn-answer-active:before {
   opacity: 0;
 }
 

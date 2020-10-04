@@ -6,7 +6,7 @@
       dark
     >
       <div class="d-flex align-center">
-        路線王 ～駅名だけで路線を当てるクイズゲーム～
+        路線王 ～駅名だけで鉄道路線を当てるクイズゲーム～
       </div>
     </v-app-bar>
 

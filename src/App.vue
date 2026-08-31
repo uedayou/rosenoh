@@ -2,7 +2,16 @@
   <v-app>
     <v-app-bar color="primary">
       <div class="d-flex align-center app-title">
-        路線王 ～駅名だけで鉄道路線を当てるクイズゲーム～
+        <span>路線王 ～駅名だけで鉄道路線を当てるクイズゲーム～</span>
+        <span v-if="$vuetify.display.smAndUp" class="app-title__powered">
+          powered by
+          <a
+            class="app-title__link"
+            href="https://uedayou.net/jrslod/"
+            target="_blank"
+            rel="noopener"
+          >鉄道駅LOD</a>
+        </span>
       </div>
     </v-app-bar>
 

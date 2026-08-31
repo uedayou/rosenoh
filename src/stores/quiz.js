@@ -5,6 +5,25 @@ import quizData from '@/assets/data.json'
 // 出題対象とする路線の最小駅数
 const MIN_STATIONS = 10
 
+// 路線ラベル（表示・引き当てキー）は data.json の company/line から組み立てる
+const labelOf = (d) => `${d.company}/${d.line}`
+
+// label → 路線ロゴ URL（data.json でロゴがある路線のみ）
+const logoByLabel = Object.fromEntries(
+  quizData.filter((d) => d.logo).map((d) => [labelOf(d), d.logo]),
+)
+
+// label → 路線カラー #RRGGBB（data.json でカラーがある路線のみ）
+const colorByLabel = Object.fromEntries(
+  quizData.filter((d) => d.color).map((d) => [labelOf(d), d.color]),
+)
+
+// label → 鉄道駅LOD のリソースパス（会社名リネームがある路線のみ。
+// data.json の path をそのまま使う）
+const pathByLabel = Object.fromEntries(
+  quizData.filter((d) => d.path).map((d) => [labelOf(d), d.path]),
+)
+
 const shuffle = ([...array]) => {
   for (let i = array.length - 1; i >= 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -28,7 +47,7 @@ export const useQuizStore = defineStore('quiz', {
     lines: () =>
       quizData
         .filter((d) => d.nstation >= MIN_STATIONS && !d.line.match(/名城線/))
-        .map((d) => d.label),
+        .map(labelOf),
     firstQuiz: (state) => state.quizzes[0],
     // 全問回答済みのときだけ結果配列を返す（未完了なら undefined）
     completedResults: (state) =>
@@ -37,6 +56,12 @@ export const useQuizStore = defineStore('quiz', {
         : undefined,
     resultById: (state) => (id) => state.results.find((r) => r.id === id),
     quizById: (state) => (id) => state.quizzes.find((q) => q.id === id),
+    // 路線ラベルからロゴ URL を引く（無ければ null）
+    lineLogo: () => (label) => logoByLabel[label] || null,
+    // 路線ラベルから路線カラー #RRGGBB を引く（無ければ null）
+    lineColor: () => (label) => colorByLabel[label] || null,
+    // 路線ラベルから鉄道駅LOD の取得パスを返す（会社名リネームが無ければ label と同じ）
+    linePath: () => (label) => pathByLabel[label] || label,
   },
   actions: {
     // 難易度に応じて候補数と制限時間を切り替える

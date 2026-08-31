@@ -4,18 +4,10 @@
       <v-col cols="12">
         <v-card>
           <v-row class="justify-center">
-            <v-col cols="12" class="py-3 top-narrow">
-              <v-img
-                :src="rosenohImg"
-                height="200"
-              ></v-img>
+            <v-col cols="12" class="pa-0">
+              <v-img :src="ogpImg" alt="路線王" />
             </v-col>
           </v-row>
-          <v-list-item>
-            <v-list-item-title class="text-headline-small mb-1 text-align-center">
-              路線王
-            </v-list-item-title>
-          </v-list-item>
           <v-row class="justify-center">
             <v-col cols="auto">
               <v-card-text class="top-narrow">
@@ -91,12 +83,14 @@
 
 <script>
 import { useQuizStore } from '@/stores/quiz'
-import rosenohImg from '@/assets/rosenoh.jpg'
+
+// public/images/ogp.jpg（バンドルせず配信、GitHub Pages の相対パス配信に対応）
+const ogpImg = `${import.meta.env.BASE_URL}images/ogp.jpg`
 
 export default {
   name: 'TopView',
   setup() {
-    return { store: useQuizStore(), rosenohImg }
+    return { store: useQuizStore(), ogpImg }
   },
   data: () => ({
     mode: 'normal',

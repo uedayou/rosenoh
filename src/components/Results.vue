@@ -44,7 +44,24 @@
             :items="results || []"
             :items-per-page="-1"
             hide-default-footer
-          ></v-data-table>
+          >
+            <template #[`item.select`]="{ item }">
+              <span class="cell-line">
+                <LineLogo
+                  v-if="item.select && item.select !== '(時間切れ)'"
+                  :label="item.select"
+                  :size="36"
+                />
+                <span>{{ item.select }}</span>
+              </span>
+            </template>
+            <template #[`item.answer`]="{ item }">
+              <span class="cell-line">
+                <LineLogo :label="item.answer" :size="36" />
+                <span>{{ item.answer }}</span>
+              </span>
+            </template>
+          </v-data-table>
         </v-card>
       </v-col>
       <v-col cols="12">
@@ -70,9 +87,11 @@
 
 <script>
 import { useQuizStore } from '@/stores/quiz'
+import LineLogo from './LineLogo.vue'
 
 export default {
   name: 'ResultsView',
+  components: { LineLogo },
   setup() {
     return { store: useQuizStore() }
   },
@@ -116,3 +135,25 @@ export default {
   },
 }
 </script>
+
+<style>
+/* PC: ロゴ左・路線名右の横並び（セル内は左寄せでよい） */
+.cell-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+/* モバイル・タブレット: ロゴを路線名の上に縦積みし、セル幅いっぱいで中央寄せ */
+@media (max-width: 959.98px) {
+  .cell-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 2px;
+    text-align: center;
+  }
+}
+</style>

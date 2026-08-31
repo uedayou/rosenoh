@@ -78,7 +78,15 @@
                   :height="$vuetify.display.mobile ? 80 : undefined"
                   @click="answer = i"
                 >
-                  {{ candidate }}
+                  <span class="btn-answer__row">
+                    <span class="btn-answer__logo">
+                      <LineLogo
+                        :label="candidate"
+                        :size="$vuetify.display.smAndUp ? 56 : 28"
+                      />
+                    </span>
+                    <span class="btn-answer__name">{{ candidate }}</span>
+                  </span>
                 </v-btn>
               </v-col>
             </v-row>
@@ -103,7 +111,7 @@
     </v-row>
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
-        <v-card-title class="text-headline-small justify-center">
+        <v-card-title class="text-headline-small text-center">
           解答終了
         </v-card-title>
         <v-spacer></v-spacer>
@@ -126,9 +134,11 @@
 
 <script>
 import { useQuizStore } from '@/stores/quiz'
+import LineLogo from './LineLogo.vue'
 
 export default {
   name: 'QuestionView',
+  components: { LineLogo },
   setup() {
     return { store: useQuizStore() }
   },
@@ -164,7 +174,8 @@ export default {
         return
       }
       this.line = this.quiz.answer
-      const uri = 'https://uedayou.net/jrslod/' + this.line
+      // 会社名をリネームしているため、fetch は鉄道駅LOD の元パスで行う
+      const uri = 'https://uedayou.net/jrslod/' + this.store.linePath(this.line)
       try {
         const res = await fetch(uri + '.json')
         if (!res.ok) throw new Error('HTTP ' + res.status)
@@ -289,7 +300,7 @@ const getLineStations = (data, uri) => {
 }
 .btn-answer {
   width: 100%;
-  min-height: 48px;
+  min-height: 68px;
   white-space: normal;
   background-color: white !important;
   color: rgba(0, 0, 0, 0.87) !important;
@@ -300,6 +311,41 @@ const getLineStations = (data, uri) => {
 }
 .btn-answer::before {
   opacity: 0;
+}
+/* v-btn の内容ラッパーを全幅にして「左：ロゴ／右：路線名」を成立させる */
+.btn-answer .v-btn__content {
+  width: 100%;
+}
+/* ロゴ:路線名 = 2:8 のグリッド */
+.btn-answer__row {
+  display: grid;
+  grid-template-columns: 2fr 8fr;
+  align-items: center;
+  gap: 12px; /* ロゴと路線名の間隔 */
+  width: 100%;
+  padding: 6px 2px; /* ボタン内の上下余白 */
+}
+.btn-answer__logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-answer__logo .line-logo {
+  max-width: 100%;
+  max-height: 28px; /* スマホ: 幅の狭い列でさらに小さくなる */
+  width: auto;
+  height: auto;
+}
+@media (min-width: 600px) {
+  .btn-answer__logo .line-logo {
+    max-height: 56px; /* PC・タブレット: 大きめ */
+  }
+}
+.btn-answer__name {
+  min-width: 0;
+  text-align: left;
+  white-space: normal;
+  line-height: 1.3;
 }
 .col-answer {
   margin: 0;

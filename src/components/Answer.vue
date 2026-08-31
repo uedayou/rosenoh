@@ -27,6 +27,9 @@
       <v-col cols="12">
         <v-card>
           <v-list-item>
+            <div class="answer-logo">
+              <LineLogo :label="getAnswer()" :size="96" />
+            </div>
             <v-list-item-title class="text-headline-small mb-1 text-align-center font-color-green">
               {{ getAnswer() }}
             </v-list-item-title>
@@ -48,9 +51,9 @@
                     v-for="(obj, i) in getStations()"
                     :key="i"
                     :size="getCandidates().includes(obj) ? 'large' : 'default'"
-                    dot-color="primary"
+                    :dot-color="dotColor"
                     icon="mdi-train"
-                    icon-color="white"
+                    :icon-color="iconColor"
                   >
                     <template #opposite>
                       <span :class="{ 'station-candidate': getCandidates().includes(obj) }">
@@ -87,15 +90,31 @@
 
 <script>
 import { useQuizStore } from '@/stores/quiz'
+import LineLogo from './LineLogo.vue'
 
 export default {
   name: 'AnswerView',
+  components: { LineLogo },
   setup() {
     return { store: useQuizStore() }
   },
   data: () => ({
     result: null,
   }),
+  computed: {
+    // タイムラインのドット色（路線カラー。無ければテーマ primary）
+    dotColor() {
+      return (this.result && this.store.lineColor(this.result.answer)) || 'primary'
+    },
+    // ドット色に対して読めるアイコン色（明るい路線カラーなら黒）
+    iconColor() {
+      const c = this.result && this.store.lineColor(this.result.answer)
+      if (!c) return 'white'
+      const n = parseInt(c.slice(1), 16)
+      const lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
+      return lum > 0.6 ? 'black' : 'white'
+    },
+  },
   created() {
     if (!this.getResult()) {
       this.$router.replace({ name: 'top' })
@@ -156,5 +175,11 @@ export default {
 /* 出題に使われた駅は大きく表示 */
 .stations-timeline .station-candidate {
   font-size: x-large;
+}
+
+/* 「答え」: 路線名の上にロゴを大きく中央表示 */
+.answer-logo {
+  margin: 12px 0 16px;
+  text-align: center;
 }
 </style>

@@ -47,11 +47,24 @@
   font-weight: 500;
   white-space: normal;
   line-height: 1.2;
+  flex-wrap: wrap;
+  column-gap: 12px;
 }
 @media (max-width: 599px) {
   .app-title {
     font-size: 1rem;
   }
+}
+/* 「powered by 鉄道駅LOD」（モバイル以外で表示） */
+.app-title__powered {
+  font-size: 0.8rem;
+  font-weight: 400;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+.app-title__link {
+  color: inherit;
+  text-decoration: underline;
 }
 
 /* ── Vuetify 2 → 4 の余白差の復元 ──

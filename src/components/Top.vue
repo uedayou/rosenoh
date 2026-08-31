@@ -1,30 +1,29 @@
 <template>
   <v-container>
-    <v-row dense>
+    <v-row density="compact">
       <v-col cols="12">
         <v-card>
-          <v-row justify="center">
-            <v-col cols="auto">
-              <v-img src="../assets/rosenoh.jpg"
-                height="200px"
-                style="max-width:400px"></v-img>
+          <v-row class="justify-center">
+            <v-col cols="12" class="py-3 top-narrow">
+              <v-img
+                :src="rosenohImg"
+                height="200"
+              ></v-img>
             </v-col>
           </v-row>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center">
-                路線王
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center">
+              路線王
+            </v-list-item-title>
           </v-list-item>
-          <v-row justify="center">
+          <v-row class="justify-center">
             <v-col cols="auto">
-              <v-card-text style="max-width:400px">
+              <v-card-text class="top-narrow">
                 <div>
-                鉄道駅名の候補だけを見て、日本のどの鉄道路線かを当てるクイズゲームアプリです。
+                  鉄道駅名の候補だけを見て、日本のどの鉄道路線かを当てるクイズゲームアプリです。
                 </div>
                 <div>
-                現在、{{ $store.getters.getData.length }} の鉄道路線からクイズが出題されます。
+                  現在、{{ store.lines.length }} の鉄道路線からクイズが出題されます。
                 </div>
               </v-card-text>
             </v-col>
@@ -34,42 +33,52 @@
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <div class="overline text-align-center">
-                難易度
-              </div>
-              <v-radio-group v-model="mode" row dense style="margin:0 auto;">
-                <v-radio label="かんたん" value="easy"></v-radio>
-                <v-radio label="ふつう" value="normal"></v-radio>
-                <v-radio label="むずかしい" value="hard"></v-radio>
-              </v-radio-group>
-            </v-list-item-content>
+            <div class="text-label-medium text-align-center">
+              難易度
+            </div>
+            <v-radio-group
+              v-model="mode"
+              inline
+              color="primary"
+              class="center-radio-group"
+            >
+              <v-radio label="かんたん" value="easy"></v-radio>
+              <v-radio label="ふつう" value="normal"></v-radio>
+              <v-radio label="むずかしい" value="hard"></v-radio>
+            </v-radio-group>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <div class="overline text-align-center">
-                問題数
-              </div>
-              <v-radio-group v-model="num" row dense style="margin:0 auto;">
-                <v-radio label="3問" value="3"></v-radio>
-                <v-radio label="5問" value="5"></v-radio>
-                <v-radio label="10問" value="10"></v-radio>
-              </v-radio-group>
-            </v-list-item-content>
+            <div class="text-label-medium text-align-center">
+              問題数
+            </div>
+            <v-radio-group
+              v-model="num"
+              inline
+              color="primary"
+              class="center-radio-group"
+            >
+              <v-radio label="3問" value="3"></v-radio>
+              <v-radio label="5問" value="5"></v-radio>
+              <v-radio label="10問" value="10"></v-radio>
+            </v-radio-group>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
-          <v-row justify="center">
+          <v-row class="justify-center">
             <v-col cols="auto">
-              <v-btn style="margin-top:30px;margin-bottom:30px"
-                depressed large color="primary"
-                @click="goNext">
+              <v-btn
+                class="page-action-btn"
+                variant="flat"
+                size="large"
+                color="primary"
+                @click="goNext"
+              >
                 クイズ開始
               </v-btn>
             </v-col>
@@ -81,36 +90,46 @@
 </template>
 
 <script>
+import { useQuizStore } from '@/stores/quiz'
+import rosenohImg from '@/assets/rosenoh.jpg'
+
 export default {
-  name: 'Top',
+  name: 'TopView',
+  setup() {
+    return { store: useQuizStore(), rosenohImg }
+  },
   data: () => ({
-    mode: "normal",
-    num: "5",
+    mode: 'normal',
+    num: '5',
   }),
   methods: {
-    goNext: function() {
-      this.$store.commit("setMode", this.mode);
-      this.$store.commit("setNumberOfQuize", this.num);
-      this.$store.dispatch("initialize")
-      .then(()=>{
-        const quiz = this.$store.getters.getFirstQuiz;
-        this.$router.replace({
-          name: "quiz",
-          params: {
-            id: quiz.id
-          }
-        });
-      });
-    }
-  }
+    goNext() {
+      this.store.setMode(this.mode)
+      this.store.setNumberOfQuiz(this.num)
+      this.store.initialize()
+      const quiz = this.store.firstQuiz
+      this.$router.replace({
+        name: 'quiz',
+        params: { id: quiz.id },
+      })
+    },
+  },
 }
 </script>
 
 <style>
-.text-align-center {
-  text-align:center
+/* ロゴ・説明文の横幅を旧サイト同様 400px に制限 */
+.top-narrow {
+  max-width: 400px;
 }
-.font-color-green {
-  color:green
+
+/*
+ * Vuetify 4 の inline ラジオ群はデフォルトで左寄せ・項目間の余白なし。
+ * 旧 Vuetify 2 のように中央寄せ＋項目間に余白を付ける。
+ */
+.center-radio-group .v-selection-control-group--inline {
+  justify-content: center;
+  gap: 4px 20px;
+  flex-wrap: wrap;
 }
 </style>

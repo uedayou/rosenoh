@@ -1,39 +1,35 @@
 <template>
   <v-container>
-    <v-row dense>
+    <v-row density="compact" v-if="result">
       <v-col cols="12" v-show="!getCorrect()">
-        <v-row justify="center">
+        <v-row class="justify-center">
           <v-col cols="auto">
-            <v-icon size="250" color="red">mdi-close</v-icon>
+            <v-icon :size="250" color="red" icon="mdi-close"></v-icon>
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="12" v-show="getCorrect()">
-        <v-row justify="center">
+        <v-row class="justify-center">
           <v-col cols="auto">
-            <v-icon size="200" color="green">mdi-circle-outline</v-icon>
+            <v-icon :size="200" color="green" icon="mdi-circle-outline"></v-icon>
           </v-col>
         </v-row>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center">
-                答え
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center">
+              答え
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center font-color-green">
-                {{ getAnswer() }}
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center font-color-green">
+              {{ getAnswer() }}
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
@@ -41,37 +37,44 @@
         <v-card>
           <v-expansion-panels>
             <v-expansion-panel>
-              <v-expansion-panel-header style="padding:0">
-                <span class="headline mb-1 text-align-center font-color-green">
+              <v-expansion-panel-title class="pa-0">
+                <span class="text-headline-small mb-1 text-align-center font-color-green stations-panel-title">
                   路線内の駅
                 </span>
-              </v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-timeline>
-                  <v-timeline-item 
-                    v-for="(obj,i) in getStations()"
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <v-timeline side="end" class="stations-timeline">
+                  <v-timeline-item
+                    v-for="(obj, i) in getStations()"
                     :key="i"
-                    :large="getCandidates().includes(obj)"
-                    right
-                    icon="mdi-train">
-                    <span slot="opposite"
-                      :style="{'font-size':getCandidates().includes(obj)?'x-large':'normal'}">
-                      {{ obj }}
-                    </span>
+                    :size="getCandidates().includes(obj) ? 'large' : 'default'"
+                    dot-color="primary"
+                    icon="mdi-train"
+                    icon-color="white"
+                  >
+                    <template #opposite>
+                      <span :class="{ 'station-candidate': getCandidates().includes(obj) }">
+                        {{ obj }}
+                      </span>
+                    </template>
                   </v-timeline-item>
                 </v-timeline>
-              </v-expansion-panel-content>
+              </v-expansion-panel-text>
             </v-expansion-panel>
           </v-expansion-panels>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
-          <v-row justify="center">
+          <v-row class="justify-center">
             <v-col cols="auto">
-              <v-btn class="btn-go-next"
-                depressed large color="primary"
-                @click="goNext">
+              <v-btn
+                class="page-action-btn"
+                variant="flat"
+                size="large"
+                color="primary"
+                @click="goNext"
+              >
                 {{ result.next ? '次の問題へ' : '結果' }}
               </v-btn>
             </v-col>
@@ -83,59 +86,75 @@
 </template>
 
 <script>
+import { useQuizStore } from '@/stores/quiz'
+
 export default {
-  name: 'Answer',
+  name: 'AnswerView',
+  setup() {
+    return { store: useQuizStore() }
+  },
   data: () => ({
-    result: null
+    result: null,
   }),
-  mounted() {
-    if (!this.getResult())
-      this.$router.replace({ name: "top" });
+  created() {
+    if (!this.getResult()) {
+      this.$router.replace({ name: 'top' })
+    }
   },
   methods: {
-    getResult: function() {
+    getResult() {
       if (!this.result) {
-        this.result = this.$store.getters.getResultById(this.$route.params.id);
+        this.result = this.store.resultById(this.$route.params.id)
       }
-      return this.result;
+      return this.result
     },
-    getAnswer: function() {
-      return this.getResult().answer;
+    getAnswer() {
+      return this.getResult().answer
     },
-    getStations: function() {
-      return this.getResult().stations;
+    getStations() {
+      return this.getResult().stations
     },
-    getCandidates: function() {
-      return this.getResult().candidates;
+    getCandidates() {
+      return this.getResult().candidates
     },
-    getCorrect: function() {
-      return this.getResult().correct;
+    getCorrect() {
+      return this.getResult().correct
     },
-    goNext: function() {
+    goNext() {
       if (this.getResult().next) {
         this.$router.replace({
-          name: "quiz",
-          params: {
-            id: this.getResult().next
-          }
-        });
+          name: 'quiz',
+          params: { id: this.getResult().next },
+        })
       } else {
-        this.$router.replace({ name: "results" });
+        this.$router.replace({ name: 'results' })
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style>
-.text-align-center {
-  text-align:center
+/*
+ * Vuetify 4 の v-expansion-panel-title は flex レイアウトで、
+ * タイトルの span が内容幅に縮むため text-align:center が効かない。
+ * span を伸ばして「路線内の駅」を中央寄せにする（旧サイト相当）。
+ */
+.stations-panel-title {
+  flex: 1 1 auto;
 }
-.font-color-green {
-  color:green
+
+/*
+ * Vuetify 4 の side 指定タイムラインは opposite 列と body 列の幅が不揃いで
+ * ドット（路線の線）が中央からずれる。両列を等幅にして中央寄せに戻す
+ * （旧サイト = Vuetify 2 の見た目）。
+ */
+.stations-timeline.v-timeline--vertical {
+  grid-template-columns: 1fr auto 1fr;
 }
-.btn-go-next {
-  margin-top:30px;
-  margin-bottom:30px;
+
+/* 出題に使われた駅は大きく表示 */
+.stations-timeline .station-candidate {
+  font-size: x-large;
 }
 </style>

@@ -1,31 +1,28 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import { createRouter, createWebHashHistory } from 'vue-router'
 
 import App from './App.vue'
-import vuetify from './plugins/vuetify';
-import store from './store'
+import vuetify from './plugins/vuetify'
+import './styles/app.css'
 
-import Top from './components/Top';
-import Question from './components/Question';
-import Answer from './components/Answer';
-import Results from './components/Results';
+import Top from './components/Top.vue'
+import Question from './components/Question.vue'
+import Answer from './components/Answer.vue'
+import Results from './components/Results.vue'
 
-Vue.config.productionTip = false
-
-Vue.use(VueRouter)
-
-const router = new VueRouter({
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: [
-    { path: '/', name: "top", component: Top },
-    { path: '/quiz/:id', name: "quiz", component: Question },
-    { path: '/answer/:id', name: "answer", component: Answer },
-    { path: '/results', name: "results", component: Results },
-  ]
+    { path: '/', name: 'top', component: Top },
+    { path: '/quiz/:id', name: 'quiz', component: Question },
+    { path: '/answer/:id', name: 'answer', component: Answer },
+    { path: '/results', name: 'results', component: Results },
+  ],
 })
 
-new Vue({
-  vuetify,
-  router,
-  store,
-  render: h => h(App)
-}).$mount('#app')
+createApp(App)
+  .use(createPinia())
+  .use(router)
+  .use(vuetify)
+  .mount('#app')

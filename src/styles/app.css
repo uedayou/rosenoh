@@ -1,0 +1,80 @@
+/*
+ * アプリ共通スタイル。
+ * 各コンポーネントの <style> に重複していたユーティリティと、
+ * Vuetify 2 → 4 で変わった余白を旧サイト (rosenoh.uedayou.net) 相当に戻す調整をまとめる。
+ */
+
+/* ── 共有ユーティリティ ── */
+.text-align-center {
+  text-align: center;
+}
+.font-color-green {
+  color: green;
+}
+
+/* 各ページ下部の主要ボタン（クイズ開始 / 次の問題へ / 最初に戻る）共通の余白 */
+.page-action-btn {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* フッターのリンク */
+.footer-link {
+  margin-right: 0.5em;
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ── レイアウト ──
+ * Vuetify 4 は v-container の max-width を大きく縮小した（1000px 幅で ~700px）。
+ * 旧 Vuetify 2 の挙動（960px 未満はフル幅・12px パディング、以降 900px、
+ * 1264px 以降 1185px）に合わせて余白と横幅を復元する。
+ */
+.v-container {
+  max-width: 900px;
+  padding: 12px;
+}
+@media (min-width: 1264px) {
+  .v-container {
+    max-width: 1185px;
+  }
+}
+
+/* アプリバーのタイトル: 旧実装同様、狭い画面では折り返す */
+.app-title {
+  padding-left: 16px;
+  font-size: 1.25rem;
+  font-weight: 500;
+  white-space: normal;
+  line-height: 1.2;
+}
+@media (max-width: 599px) {
+  .app-title {
+    font-size: 1rem;
+  }
+}
+
+/* ── Vuetify 2 → 4 の余白差の復元 ──
+ * v4 は v-list-item__content の内側パディング（v2 は 12px）を廃止し、
+ * v-list-item 自体に 4px を付けた。カードが軒並み詰まって見えるため v2 相当に戻す。
+ */
+.v-list-item {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.v-list-item__content {
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* overline 相当ラベル（v4 では text-label-medium）の行間を v2 の overline に近づける */
+.v-list-item .text-label-medium {
+  line-height: 2;
+}
+
+/* v4 の v-col はパディング 0。中央寄せ用の cols="auto" 列
+ * （タイマー・アイコン・ボタンを囲む列）に v2 相当の 12px を戻す。
+ */
+.v-container .v-col--cols-auto {
+  padding: 12px;
+}

@@ -1,47 +1,39 @@
 <template>
   <v-container>
-    <v-row dense>
+    <v-row density="compact">
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center font-color-green">
-                結果
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center font-color-green">
+              結果
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center">
-                {{ nQuiz }}問中{{ nCorrect }}問正解しました。
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center">
+              {{ nQuiz }}問中{{ nCorrect }}問正解しました。
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center">
-                かかった時間：{{ totalTime }} 秒
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center">
+              かかった時間：{{ totalTime }} 秒
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
           <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title class="headline mb-1 text-align-center">
-                難易度：{{ mode }}
-              </v-list-item-title>
-            </v-list-item-content>
+            <v-list-item-title class="text-headline-small mb-1 text-align-center">
+              難易度：{{ mode }}
+            </v-list-item-title>
           </v-list-item>
         </v-card>
       </v-col>
@@ -50,17 +42,22 @@
           <v-data-table
             :headers="headers"
             :items="results || []"
-            disable-sort
-            hide-default-footer>
-          </v-data-table>
+            :items-per-page="-1"
+            hide-default-footer
+          ></v-data-table>
         </v-card>
       </v-col>
       <v-col cols="12">
         <v-card>
-          <v-row justify="center">
+          <v-row class="justify-center">
             <v-col cols="auto">
-              <v-btn class="btn-go-top"
-                depressed large color="primary" to="/">
+              <v-btn
+                class="page-action-btn"
+                variant="flat"
+                size="large"
+                color="primary"
+                to="/"
+              >
                 最初に戻る
               </v-btn>
             </v-col>
@@ -72,57 +69,50 @@
 </template>
 
 <script>
+import { useQuizStore } from '@/stores/quiz'
+
 export default {
-  name: 'Results',
+  name: 'ResultsView',
+  setup() {
+    return { store: useQuizStore() }
+  },
   data: () => ({
     headers: [
-      { text: '問題', align: 'start', value: 'index' },
-      { text: '正誤', value: "correctness" },
-      { text: '解答', value: 'select' },
-      { text: '正解', value: 'answer' },
-      { text: '解答時間', value: 'stime' },
+      { title: '問題', align: 'start', key: 'index', sortable: false },
+      { title: '正誤', key: 'correctness', sortable: false },
+      { title: '解答', key: 'select', sortable: false },
+      { title: '正解', key: 'answer', sortable: false },
+      { title: '解答時間', key: 'stime', sortable: false },
     ],
     results: null,
     nQuiz: 0,
     nCorrect: 0,
     totalTime: 0,
-    mode: "ふつう",
+    mode: 'ふつう',
   }),
-  mounted: function() {
-    let res = this.$store.getters.getResults;
+  mounted() {
+    const res = this.store.completedResults
     if (!res) {
-      this.$router.replace({ name: "top" });
+      this.$router.replace({ name: 'top' })
+      return
     }
-    this.nQuiz = res.length;
-    this.totalTime = 0;
-    for (let obj of res) {
-      obj.correctness = obj.correct?"〇":"×";
-      this.totalTime += obj.time;
-      if (obj.select.length===0) obj.select = "(時間切れ)";
-      obj.stime = obj.time+"秒"
-      if (obj.correct) this.nCorrect++;
+    this.nQuiz = res.length
+    this.totalTime = 0
+    for (const obj of res) {
+      obj.correctness = obj.correct ? '〇' : '×'
+      this.totalTime += obj.time
+      if (obj.select.length === 0) obj.select = '(時間切れ)'
+      obj.stime = obj.time + '秒'
+      if (obj.correct) this.nCorrect++
     }
-    if (this.$store.getters.getMode=="hard") {
-      this.mode = "むずかしい";
-    } else if (this.$store.getters.getMode=="easy") {
-      this.mode = "やさしい";
+    if (this.store.mode === 'hard') {
+      this.mode = 'むずかしい'
+    } else if (this.store.mode === 'easy') {
+      this.mode = 'やさしい'
     } else {
-      this.mode = "ふつう";
+      this.mode = 'ふつう'
     }
-    this.results = res;
+    this.results = res
   },
 }
 </script>
-
-<style>
-.text-align-center {
-  text-align:center
-}
-.font-color-green {
-  color:green
-}
-.btn-go-top {
-  margin-top:30px;
-  margin-bottom:30px;
-}
-</style>

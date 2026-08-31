@@ -9,6 +9,8 @@
 
 <https://rosenoh.uedayou.net/>
 
+Vue 3 + Vuetify 4 + Vite 製の SPA です。
+
 ## Project setup
 ```
 npm install
@@ -16,12 +18,17 @@ npm install
 
 ### Compiles and hot-reloads for development
 ```
-npm run serve
+npm run dev
 ```
 
 ### Compiles and minifies for production
 ```
 npm run build
+```
+
+### Locally preview the production build
+```
+npm run preview
 ```
 
 ### Lints and fixes files
@@ -30,4 +37,4 @@ npm run lint
 ```
 
 ### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+See [Vite Configuration Reference](https://vite.dev/config/).

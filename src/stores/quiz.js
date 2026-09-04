@@ -5,6 +5,14 @@ import quizData from '@/assets/data.json'
 // 出題対象とする路線の最小駅数
 const MIN_STATIONS = 10
 
+// 難易度ごとのパラメータ（候補ヒントに出す駅数・制限秒数）。
+// 難易度に関する数値はここを単一の情報源とする。
+const MODES = {
+  easy: { label: 'かんたん', nCandidate: 8, answerTime: 60 },
+  normal: { label: 'ふつう', nCandidate: 6, answerTime: 45 },
+  hard: { label: 'むずかしい', nCandidate: 4, answerTime: 30 },
+}
+
 // 路線ラベル（表示・引き当てキー）は data.json の company/line から組み立てる
 const labelOf = (d) => `${d.company}/${d.line}`
 
@@ -34,7 +42,7 @@ const shuffle = ([...array]) => {
 
 export const useQuizStore = defineStore('quiz', {
   state: () => ({
-    nQuiz: 5,
+    nQuiz: 6,
     nCandidate: 6,
     answerTime: 45,
     mode: 'normal',
@@ -49,6 +57,9 @@ export const useQuizStore = defineStore('quiz', {
         .filter((d) => d.nstation >= MIN_STATIONS && !d.line.match(/名城線/))
         .map(labelOf),
     firstQuiz: (state) => state.quizzes[0],
+    // 難易度の選択肢一覧（Top 画面の難易度カード表示用）。
+    // key は 'easy' | 'normal' | 'hard'、label は日本語表示名。
+    modeOptions: () => Object.entries(MODES).map(([key, m]) => ({ key, ...m })),
     // 全問回答済みのときだけ結果配列を返す（未完了なら undefined）
     completedResults: (state) =>
       state.results.length > 0 && state.results.length === state.quizzes.length
@@ -64,19 +75,12 @@ export const useQuizStore = defineStore('quiz', {
     linePath: () => (label) => pathByLabel[label] || label,
   },
   actions: {
-    // 難易度に応じて候補数と制限時間を切り替える
+    // 難易度に応じて候補数と制限時間を切り替える（未知の値は normal 扱い）
     setMode(mode) {
+      const m = MODES[mode] || MODES.normal
       this.mode = mode
-      if (mode === 'hard') {
-        this.nCandidate = 4
-        this.answerTime = 30
-      } else if (mode === 'easy') {
-        this.nCandidate = 8
-        this.answerTime = 60
-      } else {
-        this.nCandidate = 6
-        this.answerTime = 45
-      }
+      this.nCandidate = m.nCandidate
+      this.answerTime = m.answerTime
     },
     setNumberOfQuiz(number) {
       this.nQuiz = +number

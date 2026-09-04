@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="quiz-page">
     <v-row density="compact" v-show="!loading">
       <v-col cols="12">
         <v-card>
@@ -55,7 +55,7 @@
             </div>
           </v-list-item>
           <v-list-item>
-            <div class="text-label-medium mb-4">
+            <div class="text-label-medium answer-instruction mb-4">
               以下の路線名をひとつ選択して解答ボタンを押してください。
             </div>
           </v-list-item>
@@ -352,5 +352,21 @@ const getLineStations = (data, uri) => {
 }
 .currentTime {
   font-size: 36px;
+}
+
+/*
+ * PC 幅では「問題N」「解答」の見出しや操作説明文（text-label-medium = 12px）が
+ * 小さく見えるため、≥960px でこのページのみ引き上げる（モバイルは据え置き）。
+ * トップページ（Top.vue）と同じ 0.875rem に合わせる。
+ */
+@media (min-width: 960px) {
+  .quiz-page .v-list-item .text-label-medium {
+    font-size: 0.875rem;
+  }
+  /* 操作の説明文は見出しラベルより一段大きく（読ませる文のため） */
+  .quiz-page .v-list-item .answer-instruction {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
 }
 </style>

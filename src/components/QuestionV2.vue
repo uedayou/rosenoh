@@ -461,7 +461,9 @@ const getLineStations = (data, uri) => {
 }
 .quiz-page-v2 .qv2-answer-name {
   flex: 1;
+  min-width: 0;
   font-weight: 500;
+  overflow-wrap: break-word;
 }
 .quiz-page-v2 .qv2-answer-tick {
   margin-left: auto;
@@ -494,7 +496,17 @@ const getLineStations = (data, uri) => {
   background: rgb(var(--v-theme-surface));
 }
 .quiz-page-v2 .qv2-submit.v-btn {
+  height: auto;
+  min-height: var(--v-btn-height);
+  padding-top: 10px;
+  padding-bottom: 10px;
   font-weight: 700;
+}
+.quiz-page-v2 .qv2-submit .v-btn__content {
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-align: center;
+  line-height: 1.3;
 }
 .quiz-page-v2 .qv2-note {
   margin: 8px 0 0;

@@ -107,7 +107,7 @@
 
       <v-col cols="12">
         <v-card>
-          <v-row class="justify-center" density="compact">
+          <v-row class="justify-center results-action-row" density="compact">
             <v-col cols="auto">
               <v-btn
                 class="page-action-btn"
@@ -200,6 +200,26 @@ export default {
 </script>
 
 <style>
+/* ===== 最下部の操作ボタン（最初に戻る / 同じ設定でもう一度） =====
+ * 各ボタンは .page-action-btn（上下 30px マージン）と、
+ * app.css の .v-col--cols-auto（上下 12px パディング）を持つため、
+ * モバイルで折り返して2行になると (30+12)*2 = 84px もの隙間ができてしまう。
+ * ここではボタン単体のマージン／コルのパディングを打ち消し、
+ * ボタン間の余白は row-gap に一本化し、行全体の外側マージンだけ残す。 */
+.results-page .results-action-row {
+  row-gap: 16px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.results-page .results-action-row .v-col--cols-auto {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.results-page .results-action-row .page-action-btn {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
 /* ===== サマリーカード ===== */
 .results-page .summary-card {
   padding: 20px 24px;

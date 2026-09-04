@@ -19,6 +19,11 @@ const USE_QUIZ_V2 = true
 
 const router = createRouter({
   history: createWebHashHistory(),
+  // 画面遷移はすべて router.replace（quiz → answer → quiz … → results）。
+  // ブラウザは遷移前のスクロール位置を保持してしまうため、毎回先頭に戻す。
+  scrollBehavior() {
+    return { top: 0 }
+  },
   routes: [
     { path: '/', name: 'top', component: Top },
     { path: '/quiz/:id', name: 'quiz', component: USE_QUIZ_V2 ? QuestionV2 : Question },

@@ -50,9 +50,17 @@
   flex-wrap: wrap;
   column-gap: 12px;
 }
+/* 「路線王」本体とサブタイトルの間は通常の単語間隔に */
+.app-title__name + .app-title__sub {
+  margin-left: -6px;
+}
+/* モバイル: サブタイトル（～ ～ で挟んだ説明）と powered by は非表示、
+ * 「路線王」だけを 1 行で表示して折り返さないようにする */
 @media (max-width: 599px) {
   .app-title {
     font-size: 1rem;
+    flex-wrap: nowrap;
+    white-space: nowrap;
   }
 }
 /* 「powered by 鉄道駅LOD」（モバイル以外で表示） */

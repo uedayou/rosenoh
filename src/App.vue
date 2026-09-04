@@ -2,7 +2,11 @@
   <v-app>
     <v-app-bar color="primary">
       <div class="d-flex align-center app-title">
-        <span>路線王 ～駅名だけで鉄道路線を当てるクイズゲーム～</span>
+        <span class="app-title__name">路線王</span>
+        <span
+          v-if="$vuetify.display.smAndUp"
+          class="app-title__sub"
+        >～駅名だけで鉄道路線を当てるクイズゲーム～</span>
         <span v-if="$vuetify.display.smAndUp" class="app-title__powered">
           powered by
           <a

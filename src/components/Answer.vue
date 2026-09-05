@@ -1,5 +1,15 @@
 <template>
-  <v-container class="answer-page">
+  <!-- data-ui-* は画面と解答結果を表す目印 -->
+  <v-container
+    class="answer-page"
+    data-ui-screen="answer"
+    :data-ui-difficulty="store.mode"
+    :data-ui-question-index="result && result.index"
+    :data-ui-is-correct="result && result.correct"
+    :data-ui-answer-time="result && result.time"
+    :data-ui-timeout="result ? !result.select : null"
+    :data-ui-has-next="result ? !!result.next : null"
+  >
     <div v-if="result" class="answer">
       <!-- 判定バナー: 正誤・自分の解答（不正解時）・正解・解答時間 -->
       <v-card class="verdict" :class="getCorrect() ? 'is-ok' : 'is-bad'">
@@ -74,6 +84,8 @@
           size="large"
           color="primary"
           class="answer-next-btn"
+          data-ui-action="next_from_answer"
+          :data-ui-value="result && result.next ? 'next_question' : 'results'"
           @click="goNext"
         >
           {{ result.next ? '次の問題へ' : '結果' }}

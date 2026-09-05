@@ -1,5 +1,15 @@
 <template>
-  <v-container class="results-page">
+  <!-- data-ui-* は画面と成績を表す目印 -->
+  <v-container
+    class="results-page"
+    data-ui-screen="results"
+    :data-ui-difficulty="store.mode"
+    :data-ui-question-count="nQuiz"
+    :data-ui-score="nCorrect"
+    :data-ui-correct-rate="rate"
+    :data-ui-total-time="totalTime"
+    :data-ui-avg-time="avgTime"
+  >
     <v-row density="compact" v-if="results">
       <!-- サマリー: スコア・正解率・正誤ドット・各種時間を1枚に集約 -->
       <v-col cols="12">
@@ -114,6 +124,7 @@
                 variant="flat"
                 size="large"
                 color="primary"
+                data-ui-action="back_to_top"
                 to="/"
               >
                 最初に戻る
@@ -125,6 +136,7 @@
                 variant="outlined"
                 size="large"
                 color="primary"
+                data-ui-action="retry_same_settings"
                 @click="retrySameSettings"
               >
                 同じ設定でもう一度

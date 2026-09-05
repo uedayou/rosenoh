@@ -1,5 +1,11 @@
 <template>
-  <v-container class="top-page">
+  <!-- data-ui-* は画面と現在の選択状態を表す目印 -->
+  <v-container
+    class="top-page"
+    data-ui-screen="top"
+    :data-ui-difficulty="mode"
+    :data-ui-question-count="num"
+  >
     <v-row density="compact">
       <!-- ヒーロー: バナー＋1文の説明＋出題対象のスタッツ -->
       <v-col cols="12">
@@ -53,6 +59,8 @@
                 type="button"
                 class="diff-card"
                 :class="{ 'is-selected': mode === opt.key }"
+                data-ui-action="select_difficulty"
+                :data-ui-value="opt.key"
                 @click="mode = opt.key"
               >
                 <span class="diff-check">選択中</span>
@@ -78,6 +86,8 @@
                 :key="n"
                 type="button"
                 :class="{ 'is-selected': num === n }"
+                data-ui-action="select_question_count"
+                :data-ui-value="n"
                 @click="num = n"
               >
                 {{ n }}問
@@ -95,6 +105,7 @@
               block
               size="x-large"
               class="start-btn"
+              data-ui-action="start_quiz"
               @click="goNext"
             >
               クイズ開始

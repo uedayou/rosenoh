@@ -1,5 +1,16 @@
 <template>
-  <v-container class="quiz-page-v2">
+  <!-- data-ui-* は画面と現在の状況を表す目印 -->
+  <v-container
+    class="quiz-page-v2"
+    data-ui-screen="quiz"
+    :data-ui-difficulty="store.mode"
+    :data-ui-question-index="quiz && quiz.index"
+    :data-ui-total-questions="totalQuiz"
+    :data-ui-time-zone="remainClass"
+    :data-ui-time-left="currentTime"
+    :data-ui-hints-opened="openedCount"
+    :data-ui-has-selection="answer != null"
+  >
     <div v-show="!loading" class="qv2">
       <!-- 上部固定: 問題番号＋残り時間（横バー） -->
       <div class="qv2-top">
@@ -51,6 +62,8 @@
               type="button"
               class="qv2-answer"
               :class="{ 'is-selected': answer === i }"
+              data-ui-action="select_candidate"
+              :data-ui-value="candidate === quiz.answer ? 'correct' : 'incorrect'"
               @click="answer = i"
             >
               <LineLogo :label="candidate" :size="26" />
@@ -68,6 +81,8 @@
           size="large"
           color="primary"
           class="qv2-submit"
+          data-ui-action="submit_answer"
+          :data-ui-value="quiz && answer != null && quiz.candidates[answer] === quiz.answer ? 'correct' : 'incorrect'"
           :disabled="answer == null || currentTime <= 0"
           @click="complete"
         >
@@ -86,7 +101,17 @@
         </v-card-title>
         <v-spacer></v-spacer>
         <v-card-actions class="justify-center">
-          <v-btn variant="flat" size="large" color="primary" @click="goAnswerPage">
+          <!-- ダイアログは body 直下へ移動するため、目印はこのボタン自身に持たせる -->
+          <v-btn
+            variant="flat"
+            size="large"
+            color="primary"
+            data-ui-screen="quiz"
+            data-ui-action="reveal_answer"
+            :data-ui-difficulty="store.mode"
+            :data-ui-question-index="quiz && quiz.index"
+            @click="goAnswerPage"
+          >
             正解は？
           </v-btn>
         </v-card-actions>

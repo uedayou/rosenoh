@@ -82,8 +82,8 @@
           </div>
 
           <template v-if="r.correct">
-            <div class="qline">
-              <LineLogo :label="r.answer" :size="30" />
+            <div class="qline qline--correct">
+              <LineLogo :label="r.answer" :size="34" />
               <span class="qline-name">{{ r.answer }}</span>
             </div>
           </template>
@@ -316,6 +316,9 @@ export default {
   height: 100%;
   padding: 14px 16px 12px 22px;
   overflow: hidden;
+  /* 正解・不正解でカード内の高さが違っても解答時間を下端に揃える */
+  display: flex;
+  flex-direction: column;
 }
 .results-page .qcard::before {
   content: "";
@@ -400,9 +403,23 @@ export default {
   color: #2e7d32;
   font-weight: 700;
 }
+/* 正解行のロゴが解答時間の区切り線と被らないよう下に余白を足す */
+.results-page .qpick--ans {
+  margin-bottom: 8px;
+}
+/* 正解カード（不正解でない）の路線名は緑・大きめで示す */
+.results-page .qcard:not(.is-bad) .qline-name {
+  color: #2e7d32;
+  font-weight: 700;
+  font-size: 19px;
+}
+/* 正解行のロゴが解答時間の区切り線と被らないよう下に余白を足す */
+.results-page .qline--correct {
+  margin-bottom: 8px;
+}
 .results-page .qcard-foot {
-  margin-top: 12px;
-  padding-top: 10px;
+  margin-top: auto;
+  padding-top: 14px;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
   font-size: 13px;
   color: rgba(0, 0, 0, 0.65);

@@ -23,24 +23,27 @@
           <span class="verdict-line-name">{{ getAnswer() }}</span>
         </div>
         <template v-else>
-          <div class="verdict-pick is-you">
-            <span class="verdict-pick-label">あなたの解答</span>
-            <span class="verdict-line">
-              <LineLogo
-                v-if="getSelect()"
-                :label="getSelect()"
-                :size="28"
-              />
-              <span v-else class="verdict-logo-blank">–</span>
-              <span class="verdict-line-name sm">{{ getSelect() || '(時間切れ)' }}</span>
-            </span>
-          </div>
-          <div class="verdict-pick is-ans">
-            <span class="verdict-pick-label">正解</span>
-            <span class="verdict-line">
-              <LineLogo :label="getAnswer()" :size="28" />
-              <span class="verdict-line-name">{{ getAnswer() }}</span>
-            </span>
+          <!-- モバイルは 2 段、PC は左右 2 カラムで余白を使い切る -->
+          <div class="verdict-picks">
+            <div class="verdict-pick is-you">
+              <span class="verdict-pick-label">あなたの解答</span>
+              <span class="verdict-line">
+                <LineLogo
+                  v-if="getSelect()"
+                  :label="getSelect()"
+                  :size="28"
+                />
+                <span v-else class="verdict-logo-blank">–</span>
+                <span class="verdict-line-name sm">{{ getSelect() || '(時間切れ)' }}</span>
+              </span>
+            </div>
+            <div class="verdict-pick is-ans">
+              <span class="verdict-pick-label">正解</span>
+              <span class="verdict-line">
+                <LineLogo :label="getAnswer()" :size="28" />
+                <span class="verdict-line-name">{{ getAnswer() }}</span>
+              </span>
+            </div>
           </div>
         </template>
 
@@ -257,9 +260,14 @@ export default {
 .answer-page .verdict-pick.is-you .verdict-line-name {
   color: #c62828;
 }
+/* 正解だったときの路線名も緑で示す */
+.answer-page .verdict.is-ok .verdict-line-name {
+  color: #2e7d32;
+}
 .answer-page .verdict-pick.is-ans .verdict-line-name {
   font-size: 18px;
   font-weight: 700;
+  color: #2e7d32;
 }
 .answer-page .verdict-logo-blank {
   flex: none;
@@ -271,6 +279,46 @@ export default {
   align-items: center;
   justify-content: center;
   color: rgba(0, 0, 0, 0.5);
+}
+/*
+ * PC（十分な横幅がある場合）は「あなたの解答」「正解」を左右 2 カラムに並べ、
+ * ラベルを名前の上に置いて路線名を大きく見せる。モバイルは従来どおり 2 段。
+ */
+@media (min-width: 600px) {
+  .answer-page .verdict-picks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .answer-page .verdict-pick {
+    grid-template-columns: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 2px 0;
+  }
+  .answer-page .verdict-pick + .verdict-pick {
+    margin-top: 0;
+  }
+  /* PC は正解を左、あなたの解答を右（DOM 順は変えずモバイルの縦並びは維持） */
+  .answer-page .verdict-pick.is-ans {
+    order: 1;
+  }
+  .answer-page .verdict-pick.is-you {
+    order: 2;
+    padding-left: 24px;
+    border-left: 1px solid rgba(0, 0, 0, 0.12);
+  }
+  .answer-page .verdict-pick-label {
+    text-align: left;
+  }
+  .answer-page .verdict-line-name.sm {
+    font-size: 18px;
+  }
+  .answer-page .verdict-pick.is-ans .verdict-line-name {
+    font-size: 22px;
+  }
 }
 .answer-page .verdict-foot {
   margin-top: 14px;

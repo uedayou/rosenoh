@@ -25,11 +25,22 @@
 
     <v-footer color="white" border>
       <v-spacer></v-spacer>
-      <a
-        class="footer-link"
-        href="https://uedayou.net/"
-        target="_blank"
-      >@uedayou</a> {{ new Date().getFullYear() }}. Some rights reserved.
+      <div class="footer-content">
+        <span>
+          <a
+            class="footer-link"
+            href="https://uedayou.net/"
+            target="_blank"
+          >@uedayou</a> {{ new Date().getFullYear() }}. Some rights reserved.
+        </span>
+        <a
+          v-if="$route.name === 'top'"
+          class="footer-link footer-link--privacy"
+          href="https://uedayou.net/privacy/"
+          target="_blank"
+          rel="noopener"
+        >プライバシーポリシー</a>
+      </div>
       <v-spacer></v-spacer>
     </v-footer>
   </v-app>
